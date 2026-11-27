@@ -8,6 +8,8 @@ Oracle Cluster File System version 2 is a general-purpose shared-storage filesys
 
 All multibyte filesystem fields are little-endian; JBD2 log fields have their own big-endian encoding. OCFS2 uses filesystem blocks from 512 to 4096 bytes and allocation clusters from 4096 to 1048576 bytes, powers of two, with clusters at least as large as blocks. The primary superblock is filesystem block 2, not sector 2. For 4096-byte blocks this means byte 8192. Test candidate geometry and confirm the eight-byte OCFSV2 signature, self block number, generation, feature words and matching block-size exponent. Reserved front-of-volume blocks and optional backup superblocks are not ordinary free space. Do not assume that a signature at a guessed byte position establishes the entire geometry.
 
+The retained header gives signatures OCFSV2, INODE01, EXBLK01, GROUP01 and REFCNT1 and block number 2 for the superblock. Its supported block range is 512-4096 bytes and cluster range 4096-1048576 bytes; verify the ratio and active feature flags, not just signatures.
+
 ## Superblock union fields
 
 The superblock is a specialized dinode whose union starts at 0xC0. Offsets in this paragraph are relative to that union. Major/minor versions 0/2, mount counters 4/6, state 8, error policy 10, check interval 12, last check 16 (64-bit), creator OS 24, compatibility word 28, incompatibility 32, RO compatibility 36. Root dinode block at 40, system-directory dinode block at 48 (64-bit), block and cluster exponents 56/60, maximum slots 64 (16-bit), tuning flags 66, UUID hash 68, first cluster-group descriptor block 72. Label 80..143, UUID 144..159, cluster stack information from 160. Root/system pointers are physical filesystem-block addresses. Unknown incompatible features prohibit mount; unknown read-only-compatible features prohibit writes.
@@ -44,8 +46,14 @@ The optional metadata integrity record contains CRC32 at 0, 16-bit Hamming ECC a
 
 Each slot has a JBD2 journal mapped through its system dinode. Journal fields use big-endian format. The superblock, slot map and journal recovery generation must identify the actual owner. Recovery may replay only validated committed transactions and handle native orphan, local-allocation and truncate cleanup. Cluster mode requires membership and fencing to ensure a failed node cannot resume writing during recovery. Offline exclusive ownership still requires replay or a verified clean state before mutation. A file relocation updates extent mappings, allocation bits and refcounts under the appropriate locks and transaction; a source cluster must remain owned until all required references are safely retired. An independent defragmenter cannot treat the disk as a simple flat bitmap.
 
+## Implementation and qualification boundary
+
+The independent provider uses Common V2: https://github.com/Infiltrator-Projects/Libraries/blob/main/docs/FILESYSTEM_COMMON_ABI_V2.md . Negotiate actual operation masks and media profiles. Distinguish unsupported, corrupt, I/O and stale-handle results. Require bounded host I/O, exclusive unmounted ownership and durable flush before mutation. Test Media and Defragmenter consume the same engine, not separate format parsers. Hosted and freestanding binaries, relocation, recovery, BOOT, kernel integration and packages require separate exact-source evidence. Current support belongs to the repository README and qualification records. The intended package paths are /System/Filesystems/ and /System/Resources/Documentation/; the reference is not an installation or release-status claim.
+
 ## Formatting and independent acceptance
 
 A formatter establishes geometry, primary and applicable backups, system and root directories, global and slot-specific allocators, journals, slot map and feature flags as a coherent initial state. Test different block/cluster ratios, extent-depth changes, discontiguous metadata groups, inline data, unwritten extents, refcount transitions, hash collisions and interrupted journal/slot recovery. Compare independently created mkfs.ocfs2 images, debugfs.ocfs2 mappings and fsck.ocfs2 results. Test actual cluster fencing separately from single-host I/O. Source: https://github.com/torvalds/linux/blob/v6.12/fs/ocfs2/ocfs2_fs.h ; algorithms in fs/ocfs2/alloc.c, suballoc.c, dir.c, refcounttree.c, journal.c and blockcheck.c. Oracle design/administration: https://docs.oracle.com/en/operating-systems/oracle-linux/9/ocfs2/ . Exact feature-specific checksum, lock, recovery and formatter rules remain subject to focused fixture validation. No independent provider qualification is implied.
 
-The PDF preserves both earlier documents as historical appendices.
+Qualify checksum/ECC, slot journals, refcount trees, lock ownership and fencing separately.
+
+Retained source: https://github.com/Infiltrator-Projects/Filesystems/blob/101026021d9088d80b7f0f472d9061f0e2c688a3/native/filesystems/ocfs2/linux/ocfs2_fs.h (blob c93689b568).
