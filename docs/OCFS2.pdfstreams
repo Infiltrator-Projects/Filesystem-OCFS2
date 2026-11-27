@@ -229,22 +229,22 @@ BT /F2 22 Tf 43 784 Td (OCFS2 - technical reference) Tj ET
 1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
 BT /F2 22 Tf 43 784 Td (OCFS2 - technical reference) Tj ET
 0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (13. Formatting and independent acceptance) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (A formatter establishes geometry, primary and applicable backups, system and root) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (directories, global and slot-specific allocators, journals, slot map and feature) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (flags as a coherent initial state. Test different block/cluster ratios,) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (A formatter establishes geometry, primary and applicable backups, system and) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (root directories, global and slot-specific allocators, journals, slot map and) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (feature flags as a coherent initial state. Test different block/cluster ratios,) Tj ET
 0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (extent-depth changes, discontiguous metadata groups, inline data, unwritten) Tj ET
 0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (extents, refcount transitions, hash collisions and interrupted journal/slot) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (recovery. Compare independently created mkfs.ocfs2 images, debugfs.ocfs2 mappings) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (and fsck.ocfs2 results. Test actual cluster fencing separately from single-host) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (I/O. Source: https://github.com/torvalds/linux/blob/v6.12/fs/ocfs2/ocfs2_fs.h ;) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 594 Td (algorithms in fs/ocfs2/alloc.c, suballoc.c, dir.c, refcounttree.c, journal.c and) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 580 Td (blockcheck.c. Oracle design/administration:) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 566 Td (https://docs.oracle.com/en/operating-systems/oracle-linux/9/ocfs2/ . Exact) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 552 Td (feature-specific checksum, lock, recovery and formatter rules remain subject to) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 538 Td (focused fixture validation. No independent provider qualification is implied.) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 514 Td (Qualify checksum/ECC, slot journals, refcount trees, lock ownership and fencing) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 500 Td (separately.) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 476 Td (Retained source:) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 462 Td (https://github.com/Infiltrator-Projects/Filesystems/blob/101026021d9088d80b7f0f472d) Tj ET
-0.08 0.14 0.20 rg BT /F3 10 Tf 43 448 Td (9061f0e2c688a3/native/filesystems/ocfs2/linux/ocfs2_fs.h \(blob c93689b568\).) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (recovery. Compare independently created mkfs.ocfs2 images, debugfs.ocfs2) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (mappings and fsck.ocfs2 results. Test actual cluster fencing separately from) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (single-host I/O. Source:) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 594 Td (https://github.com/torvalds/linux/blob/v6.12/fs/ocfs2/ocfs2_fs.h ; algorithms) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 580 Td (in fs/ocfs2/alloc.c, suballoc.c, dir.c, refcounttree.c, journal.c and) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 566 Td (blockcheck.c. Oracle design/administration:) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 552 Td (https://docs.oracle.com/en/operating-systems/oracle-linux/9/ocfs2/ . Qualify) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 538 Td (checksum/ECC, slot journals, refcount trees, lock ownership, fencing and) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 524 Td (formatter rules independently for each admitted feature profile. No independent) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 510 Td (provider qualification is implied.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 486 Td (Retained source:) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 472 Td (https://github.com/Infiltrator-Projects/Filesystems/blob/101026021d9088d80b7f0f) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 458 Td (472d9061f0e2c688a3/native/filesystems/ocfs2/linux/ocfs2_fs.h \(blob c93689b568\).) Tj ET
 0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 14) Tj ET
