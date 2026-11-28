@@ -1,7 +1,5 @@
 # Filesystem-OCFS2
 
-Native superblock, geometry, generation, optional metadata CRC and root/system-directory dinode recognition.
-
-Independent Common V2 development provider. Only CORE PROBE is exported. No namespace mounting, mutation, defragmentation, recovery or physical BOOT qualification is claimed. Unknown, incomplete and corrupt profiles are refused. Existing PDF-only release remains unchanged. Independent media qualification is gated on the actual CI result.
+Independent native Common V2 offline reader development. Recognition verifies superblock geometry, generations and root/system dinodes. The new bounded local reader implements direct and indirect extent mapping, inline files/directories, native global cluster bitmap traversal with coverage and counter reconciliation, local journal clean-state checks, and CORE mount/stat/list/read plus VOLUME query. Initial mount profile is 4 KiB blocks/clusters, one local slot, no indexed directories, xattrs or refcount trees. Dirty journal, clustered, multi-slot and unsupported feature profiles are refused. Exact-source independent image and populated payload tests must establish qualification before runtime publication; current published v0.0.1 installs documentation only. No native mutation, defragmentation, journal replay or physical BOOT/kernel qualification is claimed.
 
 [Manual](docs/OCFS2.pdf) · [Technical reference](docs/OCFS2-TECHNICAL-REFERENCE.md) · [Migration status](MIGRATION_STATUS.md) · [Common V2](https://github.com/Infiltrator-Projects/Libraries)

@@ -32,6 +32,16 @@ jobs:
           build/test_ocfs2 ./build/OCFS2.so build/foreign.img
           build/test_ocfs2 ./build/freestanding/OCFS2.so build/foreign.img
           sha256sum -c build/before
+      - name: Independent local baseline namespace (test oracle only)
+        run: |
+          set -euo pipefail
+          truncate -s 134217728 build/local.img
+          mkfs.ocfs2 -F -M local -N 1 -b 4096 -C 4096 --fs-feature-level=max-compat build/local.img
+          od -Ax -tx4 -j 8384 -N 80 build/local.img
+          sha256sum build/local.img > build/local-before
+          build/test_ocfs2 ./build/OCFS2.so build/local.img mount
+          build/test_ocfs2 ./build/freestanding/OCFS2.so build/local.img mount
+          sha256sum -c build/local-before
       - name: Sanitizer qualification
         run: |
           make clean
