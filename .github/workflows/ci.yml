@@ -38,6 +38,12 @@ jobs:
           truncate -s 134217728 build/local.img
           mkfs.ocfs2 -F -M local -N 1 -b 4096 -C 4096 --fs-feature-level=max-compat build/local.img
           od -Ax -tx4 -j 8384 -N 80 build/local.img
+          debugfs.ocfs2 -R 'stats' build/local.img
+          debugfs.ocfs2 -R 'ls //' build/local.img
+          debugfs.ocfs2 -R 'stat //global_bitmap' build/local.img
+          debugfs.ocfs2 -R 'stat //journal:0000' build/local.img
+          debugfs.ocfs2 -R 'dump //journal:0000 build/journal.bin' build/local.img
+          od -Ax -tx1 -N 80 build/journal.bin
           sha256sum build/local.img > build/local-before
           build/test_ocfs2 ./build/OCFS2.so build/local.img mount
           build/test_ocfs2 ./build/freestanding/OCFS2.so build/local.img mount
