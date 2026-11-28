@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: OCFS2 Common V2 recognition qualification
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  recognition:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: Infiltrator-Projects/Libraries
+          ref: 225e640ebed5351b1481bfbeef1a6144ca5146e7
+          path: Libraries
+          persist-credentials: false
+      - name: Native Common V2 hosted and import-free checks
+        run: |
+          test "$(git hash-object Libraries/include/infiltratr/filesystem_module_v2.h)" = 90730b68a53ecf6a6e304c789501f29c17c728c7
+          make check
+      - name: Independent formatter image (test oracle only)
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ocfs2-tools
+          truncate -s 134217728 build/foreign.img
+          mkfs.ocfs2 -F -M local -N 1 -b 4096 -C 4096 build/foreign.img
+          sha256sum build/foreign.img > build/before
+          build/test_ocfs2 ./build/OCFS2.so build/foreign.img
+          build/test_ocfs2 ./build/freestanding/OCFS2.so build/foreign.img
+          sha256sum -c build/before
+      - name: Sanitizer qualification
+        run: |
+          make clean
+          make CFLAGS="-O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer" check

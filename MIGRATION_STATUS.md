@@ -1,17 +1,5 @@
-# OCFS2 Common V2 migration status
+# OCFS2 Common V2 migration
 
-## Source and ownership
+Native superblock, geometry, generation, optional metadata CRC and root/system-directory dinode recognition.
 
-[Exact central source baseline](https://github.com/Infiltrator-Projects/Filesystems/tree/101026021d9088d80b7f0f472d9061f0e2c688a3/native/filesystems/ocfs2). Editable Linux v6.12.107-derived source remains centrally. Extract and adapt the existing implementation; preserve original licensing, attribution and provenance. New project-authored code uses GPL-3.0-or-later. No source transferred by this documentation commit.
-
-## Qualification plan
-
-1. Enumerate supported on-disk variants, validate geometry and features; implement bounded CORE probe.
-2. Provide CORE mount/stat/list/read and VOLUME query using native slot maps, system files, inodes, extent trees, allocation, refcounts, journal and cluster lock identities.
-3. Test independent single-node images, corrupt slot maps and refcounts; require distributed locking before shared-disk writes; compare independent payloads and unchanged-image hashes; inject malformed media and I/O faults.
-4. Implement mutation, format, check/repair and DEFRAG map/plan/execute/verify/recover only with proven allocation, durability and interruption/recovery semantics. Unsupported operations must refuse before writing.
-5. Qualify exact packaged Common V2 ABI, hosted and import-free freestanding profiles, then actual BOOT and kernel integration independently.
-
-All independent stages, PDF manual and packaging are pending. No runtime capability is claimed.
-
-The [design and qualification reference](docs/OCFS2.pdf) is available. It is not an operational manual; release and installation qualification remain pending.
+The native C implementation uses Common V2 bounded host I/O only. It is not a kernel, FUSE or external tool adapter. Test tools are independent oracles only. Constructed metadata fixtures, malformed-media rejection, hosted and import-free builds and sanitizers are defined in CI. Exact-source results establish the qualification boundary. Native namespace, allocation ownership beyond the decoded structures, journal or distributed-lock semantics, writes, repair, formatting and defragmentation remain outstanding. Runtime release is not yet authorized by these checks.
