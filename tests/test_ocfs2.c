@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 #define _POSIX_C_SOURCE 200809L
 #include <infiltratr/filesystem_module_v2.h>
+#include "../Libraries/tests/filesystem_reader_lifetime.h"
 #include <assert.h>
 #include <dlfcn.h>
 #include <fcntl.h>
@@ -123,6 +124,7 @@ static void mount_expect(const IfsFsCoreOpsV2*core,IfsFsHostRuntimeV2*h,struct c
 static void read_tests(const IfsFsCoreOpsV2*core,IfsFsHostRuntimeV2*h,struct context*c){
  populated();mount_expect(core,h,c,IFS_FS_ACCESS);h->capabilities|=IFS_FS_HOST_EXCLUSIVE;
  void*v=NULL;IfsFsVolumeInfoV2 info={.structure_bytes=sizeof(info)};
+ check_reader_lifetime(core, h);
  assert(core->mount(h,&v,&info)==0&&v&&info.free_bytes==(uint64_t)(SIZE/B-24-JOURNAL_N-4)*B);
  char name[256];IfsFsEntryV2 e={.structure_bytes=sizeof(e),.name=name,.name_capacity=sizeof(name)};
  assert(core->directory_entry(v,"/",0,&e)==0&&!strcmp(name,"sparse.bin"));
