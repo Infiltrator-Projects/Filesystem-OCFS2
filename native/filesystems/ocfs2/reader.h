@@ -182,7 +182,7 @@ static int mount_volume(const IfsFsHostRuntimeV2*h,void**out,IfsFsVolumeInfoV2*i
  const uint8_t*s=sb+192;uint32_t features=le32(s+32);
  /* Reject clustered, multi-slot, indexed, reflink and xattr layouts.
   * Sparse, inline, metadata ECC, backup superblock and JBD2 are admitted. */
- if(le32(s+60)!=12u||le16(s+64)!=1u||!(features&8u)||(features&~0x858u)||
+ if(le16(s+8)||le16(s+66)||le32(s+60)!=12u||le16(s+64)!=1u||!(features&8u)||(features&~0x858u)||
     (le32(s+28)&~3u)||(le32(s+36)&~1u)||le32(sb+20)>LIMIT)return IFS_FS_UNSUPPORTED;
  Volume*v=h->allocate(h->context,sizeof(*v));if(!v)return IFS_FS_NO_MEMORY;
  clear(v,sizeof(*v));v->h=h;v->blocks=le32(sb+20);v->root=le64(s+40);v->sys=le64(s+48);v->first=le64(s+72);v->gen=le32(sb+96);v->features=features;
@@ -196,7 +196,23 @@ static int mount_volume(const IfsFsHostRuntimeV2*h,void**out,IfsFsVolumeInfoV2*i
  if(!rc)rc=inode(v,id,i);
  if(!rc&&((le32(i+44)&0x110u)!=0x110u||(le32(i+184)&1u)))rc=IFS_FS_UNSUPPORTED;
  if(!rc)rc=payload(v,i,0,log,B,0);
- if(!rc&&(be32(log)!=0xc03b3998u||(be32(log+4)!=3u&&be32(log+4)!=4u)||be32(log+12)!=B||be32(log+28)))rc=IFS_FS_UNSUPPORTED;
+ if(!rc){
+  uint32_t max=be32(log+16),first=be32(log+20),sequence=be32(log+24),start=be32(log+28);
+  if(be32(log)!=0xc03b3998u||(be32(log+4)!=3u&&be32(log+4)!=4u)||be32(log+12)!=B||
+     max<2u||max>le64(i+32)/B||!first||first>=max)rc=IFS_FS_CORRUPT;
+  /* mkfs.ocfs2 1.8.7 writes a pristine JBD2 superblock with
+   * sequence=1, start=first=1. This is not the normal clean-unmount
+   * start=0 state. Admit it only if every transaction block is zero
+   * and the OCFS2 journal inode is explicitly not dirty. Do not
+   * interpret a nonzero start as generally safe or replay anything. */
+  if(!rc&&start){
+   if(start!=1u||first!=1u||sequence!=1u||max>32768u)rc=IFS_FS_UNSUPPORTED;
+   for(uint32_t k=first;!rc&&k<max;k++){
+    rc=payload(v,i,(uint64_t)k*B,log,B,0);
+    if(!rc&&nonzero(log,B))rc=IFS_FS_UNSUPPORTED;
+   }
+  }
+ }
  if(!rc)rc=inode(v,v->root,i);
  if(!rc){char name[256];unsigned n;rc=scan(v,i,NULL,0,UINT32_MAX,&id,name,&n);if(rc==IFS_FS_END)rc=0;}
  if(rc){destroy(v);return rc;}*out=v;return volume_info(v,info);
